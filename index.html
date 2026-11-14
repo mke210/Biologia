@@ -8,7 +8,7 @@
 /* Layout: banda de encabezado + mesa de laboratorio (ocular del microscopio a la izquierda, ficha de muestra a la derecha) + resumen + comparación */
 :root{
   --bg:#ECF2F0; --surface:#FFFFFF; --surface-2:#F3F7F6; --ink:#13282A; --muted:#55696A; --line:#D2DEDB;
-  --acc-animal:#C2386D; --acc-vegetal:#2D8538; --acc-agua:#1D6FCF; --acc-cuerpo:#C2561C; --acc-adn:#5B4BD6; --acc-sentidos:#0E8A86; --on-accent:#FFFFFF; --ghost:#2E5D7A;
+  --acc-animal:#C2386D; --acc-vegetal:#2D8538; --acc-agua:#1D6FCF; --acc-cuerpo:#C2561C; --acc-adn:#5B4BD6; --acc-sentidos:#0E8A86; --acc-repro:#A63A84; --on-accent:#FFFFFF; --ghost:#2E5D7A;
   --field-1:#FFFFFF; --field-2:#DCE8E4; --rim:#1C2729; --rim-2:#3B4B4F;
   --ok:#1E8A4C; --bad:#C3362B;
   --lbl-ink:#10232A; --lbl-halo:rgba(255,255,255,.92);
@@ -20,7 +20,7 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#0B1315; --surface:#121D20; --surface-2:#172529; --ink:#E3EEEC; --muted:#93A8A6; --line:#25363A;
-    --acc-animal:#F0729F; --acc-vegetal:#71C96E; --acc-agua:#62AEFF; --acc-cuerpo:#FF9B5E; --acc-adn:#A397FF; --acc-sentidos:#4FD1C5; --on-accent:#0E1A1C; --ghost:#A9D3F0;
+    --acc-animal:#F0729F; --acc-vegetal:#71C96E; --acc-agua:#62AEFF; --acc-cuerpo:#FF9B5E; --acc-adn:#A397FF; --acc-sentidos:#4FD1C5; --acc-repro:#EE8FD2; --on-accent:#0E1A1C; --ghost:#A9D3F0;
     --field-1:#22343A; --field-2:#081012; --rim:#030607; --rim-2:#2A3B40;
     --ok:#4CC97F; --bad:#FF7A6E;
     color-scheme:dark;
@@ -28,7 +28,7 @@
 }
 :root[data-theme="dark"]{
   --bg:#0B1315; --surface:#121D20; --surface-2:#172529; --ink:#E3EEEC; --muted:#93A8A6; --line:#25363A;
-  --acc-animal:#F0729F; --acc-vegetal:#71C96E; --acc-agua:#62AEFF; --acc-cuerpo:#FF9B5E; --acc-adn:#A397FF; --acc-sentidos:#4FD1C5; --on-accent:#0E1A1C; --ghost:#A9D3F0;
+  --acc-animal:#F0729F; --acc-vegetal:#71C96E; --acc-agua:#62AEFF; --acc-cuerpo:#FF9B5E; --acc-adn:#A397FF; --acc-sentidos:#4FD1C5; --acc-repro:#EE8FD2; --on-accent:#0E1A1C; --ghost:#A9D3F0;
   --field-1:#22343A; --field-2:#081012; --rim:#030607; --rim-2:#2A3B40;
   --ok:#4CC97F; --bad:#FF7A6E;
   color-scheme:dark;
@@ -39,6 +39,7 @@ body[data-cell="agua"]{ --accent:var(--acc-agua); }
 body[data-cell="cuerpo"]{ --accent:var(--acc-cuerpo); }
 body[data-cell="adn"]{ --accent:var(--acc-adn); }
 body[data-cell="sentidos"]{ --accent:var(--acc-sentidos); }
+body[data-cell="reproductor"]{ --accent:var(--acc-repro); }
 body[data-cell="inicio"]{ --accent:var(--acc-adn); }
 
 *{box-sizing:border-box}
@@ -168,7 +169,7 @@ svg:not(.show-labels) #labels .lbl{opacity:0}
 .s3-views .zoom{display:grid; grid-template-columns:1fr 1fr; gap:6px}
 .s3-views .zoom button{min-width:0; font-size:15px; padding:3px 0}
 .s3-hint{position:absolute; left:12px; bottom:10px; right:12px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted); pointer-events:none}
-#s3pins,#d3pins,#n3pins{position:absolute; inset:0; pointer-events:none; overflow:hidden}
+#s3pins,#d3pins,#n3pins,#r3pins{position:absolute; inset:0; pointer-events:none; overflow:hidden}
 .pin3{position:absolute; left:0; top:0; pointer-events:auto; display:flex; align-items:center; gap:5px; background:none; border:0; padding:0; cursor:pointer; white-space:nowrap; transition:opacity .25s; font:inherit}
 .pin3 i{width:9px; height:9px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 2px var(--surface); margin-left:-4.5px; flex:none}
 .pin3 span{font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:999px; background:var(--surface); background:color-mix(in srgb, var(--surface) 90%, transparent); color:var(--ink); border:1px solid var(--line)}
@@ -301,7 +302,16 @@ html,body{min-height:100%}
 .hcard i{width:12px; height:12px; border-radius:50%; background:var(--mc); margin-bottom:6px}
 .hcard b{font-size:15px} .hcard small{color:var(--muted); font-size:12.5px}
 /* Sentidos */
-#stagesen{aspect-ratio:4/3; max-width:820px}
+#stagesen,#stagerep{aspect-ratio:4/3; max-width:820px}
+.cycle .ct{font-family:var(--font-mono); font-size:11px; fill:var(--muted); text-anchor:middle} .cycle .ct.l{text-anchor:start}
+.cycle .ca{fill:var(--acc-repro); opacity:.18} .cycle .cl{fill:none; stroke:var(--acc-repro); stroke-width:2.5}
+.cycle .cm{stroke:var(--ink); stroke-width:1.5; stroke-dasharray:4 3} .cycle .cd{fill:var(--acc-repro); stroke:var(--surface); stroke-width:2}
+.cyc input[type=range]{width:100%; accent-color:var(--accent)}
+.cyc-info{display:grid; gap:3px; font-size:14px} .cyc-info b{font-family:var(--font-display); font-size:1.1rem} .cyc-info em{font-style:normal; font-weight:700}
+.chromo{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:4px 0}
+.chromo .cx{display:grid; text-align:center; padding:8px 12px; border-radius:12px; background:var(--surface); border:1px solid var(--line); font-size:12.5px; color:var(--muted); line-height:1.3}
+.chromo .cx b{font-family:var(--font-display); font-size:1.5rem; color:var(--ink)} .chromo .f b{color:#D48A1E} .chromo .m b{color:#2F6FB8} .chromo .z b{color:var(--acc-repro)}
+.chromo .op{font-family:var(--font-display); font-size:1.4rem; font-weight:800; color:var(--muted)}
 .blind{background:#fff} .blind .bx{font-family:var(--font-body); font-size:44px; font-weight:700; fill:#111; text-anchor:middle} .blind .bd{fill:#111}
 .tastes{display:flex; flex-wrap:wrap; gap:8px; margin-top:4px}
 .tastes span{display:grid; gap:1px; padding:7px 11px; border-radius:12px; background:color-mix(in srgb, var(--tc) 18%, var(--surface)); border:1px solid color-mix(in srgb, var(--tc) 45%, transparent); font-size:12.5px; color:var(--muted)}
@@ -398,6 +408,7 @@ footer .wrap{padding-block:18px 26px; display:flex; justify-content:space-betwee
     <a class="mi" href="#agua" data-view="agua"><span class="mi-ic" style="--mc:var(--acc-agua)"><svg viewBox="0 0 24 24"><path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/></svg></span><span class="mi-t"><b>Ciclo del agua</b><small>Paisaje animado</small></span></a>
     <a class="mi" href="#cuerpo" data-view="cuerpo"><span class="mi-ic" style="--mc:var(--acc-cuerpo)"><svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M8 8h8l-1 6h-2l-1 7-1-7H9z"/><path d="M8 8 5.5 13M16 8l2.5 5"/></svg></span><span class="mi-t"><b>Cuerpo humano</b><small>Modelo anatómico 3D</small></span></a>
     <a class="mi" href="#sentidos" data-view="sentidos"><span class="mi-ic" style="--mc:var(--acc-sentidos)"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="mi-t"><b>Los 5 sentidos</b><small>Órganos en corte 3D</small></span></a>
+    <a class="mi" href="#reproductor" data-view="reproductor"><span class="mi-ic" style="--mc:var(--acc-repro)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="3.5"/><path d="M4.5 4.5l2 2"/></svg></span><span class="mi-t"><b>Aparato reproductor</b><small>Óvulo y fecundación 3D</small></span></a>
     <a class="mi" href="#adn" data-view="adn"><span class="mi-ic" style="--mc:var(--acc-adn)"><svg viewBox="0 0 24 24"><path d="M8 3c0 6 8 6 8 9s-8 3-8 9M16 3c0 6-8 6-8 9s8 3 8 9"/><path d="M9 6h6M9.5 18h5"/></svg></span><span class="mi-t"><b>ADN</b><small>La molécula de la vida</small></span></a>
   </nav>
   <p class="side-foot">Ciencias · Secundaria</p>
@@ -487,6 +498,22 @@ footer .wrap{padding-block:18px 26px; display:flex; justify-content:space-betwee
           <div class="quiz-banner" id="n3banner" hidden></div>
           <div class="s3-hint">Arrastra para girar · rueda o pellizca para acercar · dos dedos para mover</div>
           <div class="s3-load" id="n3load">Cargando modelos 3D…</div>
+        </div>
+        <div class="stage3d" id="stagerep" hidden>
+          <canvas id="crep" aria-label="Modelos 3D del aparato reproductor. Arrastra para girarlos."></canvas>
+          <div id="r3pins"></div>
+          <div class="s3-tag" id="r3tag" hidden></div>
+          <div class="s3-hover" id="r3hover" hidden></div>
+          <div class="s3-views" id="r3views">
+            <button type="button" data-v="front">Frente</button>
+            <button type="button" data-v="side">Lado</button>
+            <button type="button" data-v="top">Arriba</button>
+            <div class="zoom"><button type="button" data-z="0.75" aria-label="Acercar">+</button><button type="button" data-z="1.33" aria-label="Alejar">−</button></div>
+            <button type="button" data-v="reset">Centrar</button>
+          </div>
+          <div class="quiz-banner" id="r3banner" hidden></div>
+          <div class="s3-hint">Arrastra para girar · rueda o pellizca para acercar · dos dedos para mover</div>
+          <div class="s3-load" id="r3load">Cargando modelos 3D…</div>
         </div>
         <div class="chips" id="chips" aria-label="Partes de la célula"></div>
         <p class="credit" id="credit3d" hidden>Modelo anatómico: BodyParts3D © The Database Center for Life Science (CC BY 4.0), adaptado por <a href="https://github.com/MervinR07/open-anatomy-3d" target="_blank" rel="noopener">open-anatomy-3d</a> (<a href="https://creativecommons.org/licenses/by/4.0/deed.es" target="_blank" rel="noopener">CC BY 4.0</a>). Modificaciones: se simplificó la malla y se añadieron nervios periféricos y una tiroides representativa.</p>
@@ -1079,6 +1106,51 @@ const CELLS = {
       extra:'El "mapa de sabores" de la lengua, con zonas para dulce, salado o ácido, es un mito: todas las zonas con botones gustativos perciben los cinco sabores. Además, "eardrum" es la palabra en inglés para tímpano.'
     }
   },
+  reproductor:{
+    kind:'repro3d', name:'Aparato reproductor',
+    unit:'Tema', total:4, closeTxt:'Ver todos los modelos', quizTxt:'el aparato reproductor',
+    top:'Modelos 3D en corte · Arrastra para girar',
+    tagL:'Reproducción humana', tagR:'4 temas',
+    def:'El aparato reproductor permite formar un nuevo ser humano. Los ovarios y los testículos producen las células sexuales (óvulos y espermatozoides) y las hormonas que, a partir de la pubertad, provocan los cambios del cuerpo.',
+    facts:[['Cromosomas del óvulo','23'],['Cromosomas del cigoto','46'],['Ciclo menstrual','≈ 28 días']],
+    hint:'Elige un modelo para verlo en corte y en funcionamiento. Toca cualquier parte para saber qué es y para qué sirve.',
+    order:['femenino','masculino','ovulo','fecundacion'],
+    orgs:{
+      femenino:{num:1, name:'Aparato reproductor femenino', c:'#B23A7E',
+        formulaT:'Recorrido del óvulo', formula:'Ovario → trompa de Falopio → útero',
+        func:'Produce los óvulos y las hormonas femeninas, y permite el desarrollo de un nuevo ser durante el embarazo.',
+        detail:'Los ovarios guardan los folículos donde maduran los óvulos y producen estrógenos y progesterona. Desde la pubertad, por lo general cada mes se libera un óvulo (ovulación): las fimbrias lo atrapan y la trompa de Falopio lo lleva hacia el útero. Mientras tanto, el endometrio se engrosa para recibir un posible embrión; si no hay fecundación, se desprende y ocurre la menstruación. En el modelo verás el óvulo viajar del ovario al útero.',
+        analog:'Una casa que cada mes prepara una habitación para un posible huésped.',
+        fact:'Al nacer, una niña tiene alrededor de un millón de folículos en sus ovarios; solo unos 400 llegan a liberar un óvulo a lo largo de la vida.',
+        care:'Llevar un registro del ciclo menstrual, mantener la higiene, vacunarse contra el virus del papiloma humano (VPH) y consultar al médico si hay dolor fuerte o cambios inusuales.'},
+      masculino:{num:2, name:'Aparato reproductor masculino', c:'#2F6FB8',
+        formulaT:'Recorrido de los espermatozoides', formula:'Testículos → epidídimo → conducto deferente → uretra',
+        func:'Produce los espermatozoides y la hormona testosterona, y los conduce hacia el exterior.',
+        detail:'Los testículos, dentro del escroto, forman espermatozoides en los túbulos seminíferos y producen testosterona. Los espermatozoides maduran en el epidídimo y viajan por el conducto deferente, que rodea la vejiga. La vesícula seminal, la próstata y las glándulas bulbouretrales agregan líquidos que forman el semen, que sale por la uretra. En el modelo, los puntos brillantes muestran ese recorrido.',
+        analog:'Una fábrica con bodega y bandas transportadoras.',
+        fact:'Desde la pubertad, los testículos producen alrededor de 1 500 espermatozoides por segundo.',
+        care:'Higiene diaria, autoexploración mensual de los testículos para detectar bultos, protección en deportes de contacto y vacuna contra el VPH.'},
+      ovulo:{num:3, name:'El óvulo', c:'#D48A1E',
+        formulaT:'Capas, de afuera hacia adentro', formula:'Corona radiada → zona pelúcida → membrana → citoplasma → núcleo',
+        func:'Es la célula sexual femenina: aporta la mitad de la información genética.',
+        detail:'Es la célula más grande del cuerpo humano: mide alrededor de 0.1 mm, apenas visible a simple vista. La protegen la corona radiada y la zona pelúcida. Su núcleo tiene 23 cromosomas y su citoplasma guarda los nutrientes de los primeros días del embrión. Después de la ovulación vive de 12 a 24 horas.',
+        analog:'Una caja fuerte con varias capas de seguridad.',
+        fact:'Un óvulo es casi 20 veces más ancho que la cabeza de un espermatozoide.'},
+      fecundacion:{num:4, name:'La fecundación', c:'#7A4FD0',
+        formulaT:'Cromosomas', formula:'23 (óvulo) + 23 (espermatozoide) = 46 (cigoto)',
+        func:'Es la unión de un espermatozoide y un óvulo para formar el cigoto, la primera célula de un nuevo ser.',
+        detail:'Ocurre en la trompa de Falopio. De millones de espermatozoides solo unos cientos llegan hasta el óvulo, y únicamente uno logra entrar: su acrosoma libera enzimas que abren paso entre la corona radiada y la zona pelúcida. En ese instante los gránulos corticales endurecen la zona para que no entre otro (en el modelo, la zona brilla). Los núcleos se unen y se forma el cigoto, con 46 cromosomas.',
+        analog:'Dos mitades de una receta que se juntan para formar la receta completa.',
+        fact:'El óvulo siempre lleva un cromosoma X; el espermatozoide puede llevar X o Y. Por eso es el espermatozoide el que define el sexo cromosómico: XX o XY.'}
+    },
+    summary:{
+      t1:'Ideas clave', t2:'Salud reproductiva',
+      funciones:['Ovarios y testículos producen células sexuales y hormonas.','Óvulos y espermatozoides tienen 23 cromosomas.','La fecundación forma un cigoto con 46 cromosomas.','El embarazo dura alrededor de 40 semanas.'],
+      caract:['Higiene diaria de los genitales.','Vacunarse contra el VPH.','Autoexploración y revisiones médicas periódicas.','Resolver dudas con personal de salud y adultos de confianza.'],
+      extraT:'Respeto y cuidado',
+      extra:'Nombrar las partes del cuerpo correctamente ayuda a cuidarlo. Tu cuerpo es tuyo: nadie debe tocarlo sin tu consentimiento. Si algo te incomoda, díselo a un adulto de confianza.'
+    }
+  },
   adn:{
     kind:'adn3d', name:'ADN',
     unit:'Tema', total:8, closeTxt:'Ver la doble hélice', quizTxt:'las partes del ADN',
@@ -1436,7 +1508,7 @@ function dnaPartList(id){
   return `<div class="box"><h3>Toca una parte para verla de cerca</h3><div class="ochips">${DNADATA.PARTS[id].map(k => `<button class="ochip" data-organ="${k}">${DNADATA.name(k)}</button>`).join('')}</div></div>`;
 }
 function renderPart(k){
-  const C = cell(), DS = isSen()?SENSEDATA:DNADATA, M = state.sel ? C.orgs[state.sel] : (isSen() ? {name:C.name, c:'var(--accent)'} : C.orgs.helice), inf = DS.info(k) || [];
+  const C = cell(), DS = isSen()?SENSEDATA:isRep()?REPRODATA:DNADATA, M = state.sel ? C.orgs[state.sel] : (isSen()||isRep() ? {name:C.name, c:'var(--accent)'} : C.orgs.helice), inf = DS.info(k) || [];
   panel.innerHTML = `<div class="pin" style="--c:${M.c}">
     <div class="slide-tag"><span>Parte · ${M.name}</span><span>${C.name}</span></div>
     <h2><span class="dot"></span>${DS.name(k)}</h2>
@@ -1554,6 +1626,103 @@ function toneToggle(btn){
 }
 function toneStop(){ if (toneOsc) { try { toneOsc.stop(); } catch(e) {} toneOsc = null; } }
 
+/* ---------- datos del aparato reproductor 3D ---------- */
+const REPRODATA = window.REPRODATA = (function(){
+  const N = { femenino:'Femenino', masculino:'Masculino', ovulo:'Óvulo', fecundacion:'Fecundación',
+    ovario:'Ovario', foliculo:'Folículos', ovocito:'Óvulo liberado', trompa:'Trompa de Falopio', fimbrias:'Fimbrias', utero:'Útero', endometrio:'Endometrio', miometrio:'Miometrio', cuello_uterino:'Cuello uterino (cérvix)', vagina:'Vagina',
+    testiculo:'Testículo', tubulos_seminiferos:'Túbulos seminíferos', escroto:'Escroto', epididimo:'Epidídimo', conducto_deferente:'Conducto deferente', vesicula_seminal:'Vesícula seminal', prostata:'Próstata', glandulas_bulbouretrales:'Glándulas bulbouretrales', uretra:'Uretra', pene:'Pene', vejiga:'Vejiga (aparato urinario)', espermatozoide:'Espermatozoides',
+    corona_radiada:'Corona radiada', zona_pelucida:'Zona pelúcida', membrana:'Membrana plasmática', citoplasma:'Citoplasma', nucleo:'Núcleo', cuerpo_polar:'Cuerpo polar', granulos_corticales:'Gránulos corticales',
+    acrosoma:'Acrosoma', pieza_intermedia:'Pieza intermedia', flagelo:'Flagelo', cigoto:'Cigoto (pronúcleos)' };
+  const S = { cuello_uterino:'Cuello uterino', glandulas_bulbouretrales:'Gl. bulbouretrales', vejiga:'Vejiga', tubulos_seminiferos:'Túbulos seminíferos', cigoto:'Cigoto' };
+  const I = {
+    ovario:['Producen los óvulos y las hormonas femeninas (estrógenos y progesterona).','Son dos órganos del tamaño de una almendra, a los lados del útero. Desde la pubertad, por lo general madura y se libera un óvulo cada mes: es la ovulación.'],
+    foliculo:['Es la bolsita donde madura un óvulo.','Cada mes varios folículos empiezan a crecer, pero normalmente solo uno madura por completo. Al romperse libera el óvulo; lo que queda forma el cuerpo lúteo (en amarillo), que produce progesterona.'],
+    ovocito:['Es el óvulo que salió del ovario y viaja hacia el útero.','Las fimbrias lo atrapan y los cilios de la trompa lo empujan. Vive de 12 a 24 horas; si no es fecundado, se desintegra.'],
+    trompa:['Lleva el óvulo del ovario al útero; en ella ocurre la fecundación.','Mide de 10 a 12 cm. Su interior tiene cilios y músculos que mueven suavemente al óvulo.'],
+    fimbrias:['Atrapan el óvulo cuando sale del ovario.','Son prolongaciones en forma de dedos al final de la trompa de Falopio que rodean al ovario.'],
+    utero:['Recibe al embrión y lo protege durante el embarazo.','Es un órgano muscular hueco con forma de pera invertida, de unos 7 cm. Durante el embarazo crece hasta alojar a un bebé.'],
+    endometrio:['Capa interna del útero que cada mes se prepara para recibir un embrión.','Se engrosa durante el ciclo. Si no hay embarazo, se desprende y sale con un poco de sangre: es la menstruación.'],
+    miometrio:['Capa muscular del útero.','Sus contracciones expulsan el endometrio durante la menstruación y empujan al bebé durante el parto.'],
+    cuello_uterino:['Une el útero con la vagina.','También se llama cérvix. La revisión periódica con el médico (prueba de Papanicolaou) ayuda a prevenir el cáncer cervicouterino.'],
+    vagina:['Conducto que comunica el útero con el exterior.','Por ella sale el flujo menstrual y es el canal por donde nace el bebé en un parto natural. Sus paredes son elásticas.'],
+    testiculo:['Producen los espermatozoides y la hormona testosterona.','Están fuera del abdomen, dentro del escroto, porque los espermatozoides necesitan una temperatura unos 2 °C más baja que la del cuerpo.'],
+    tubulos_seminiferos:['Es donde se forman los espermatozoides.','Cada testículo tiene cientos de estos tubos enrollados; estirados medirían cientos de metros.'],
+    escroto:['Bolsa de piel que contiene y protege a los testículos.','Regula su temperatura: se acerca al cuerpo con el frío y se aleja con el calor.'],
+    epididimo:['Almacena los espermatozoides mientras terminan de madurar.','Es un tubo muy enrollado sobre la parte de atrás de cada testículo; desenrollado mediría unos 6 metros. Ahí los espermatozoides adquieren la capacidad de nadar.'],
+    conducto_deferente:['Transporta los espermatozoides del epidídimo hacia la uretra.','Es un tubo de unos 30 a 45 cm que sube al abdomen, rodea la vejiga y se une con la vesícula seminal.'],
+    vesicula_seminal:['Produce un líquido rico en azúcar que da energía a los espermatozoides.','Aporta la mayor parte del semen.'],
+    prostata:['Produce un líquido que protege y activa a los espermatozoides.','Tiene el tamaño de una nuez y rodea a la uretra debajo de la vejiga. En la edad adulta conviene revisarla con el médico.'],
+    glandulas_bulbouretrales:['Producen un líquido que limpia y lubrica la uretra.','También se llaman glándulas de Cowper; son del tamaño de un chícharo.'],
+    uretra:['Conduce la orina o el semen hacia el exterior, nunca los dos al mismo tiempo.','En el hombre la comparten el aparato urinario y el reproductor; un músculo cierra el paso de la orina cuando sale el semen.'],
+    pene:['Órgano por el que salen la orina y el semen.','La uretra lo recorre por dentro hasta la punta. Tiene tejido esponjoso que puede llenarse de sangre.'],
+    vejiga:['Almacena la orina; pertenece al aparato urinario.','Se muestra como referencia porque los aparatos reproductor y urinario están muy cerca.'],
+    espermatozoide:['Es la célula sexual masculina.','Se forma en los túbulos seminíferos, madura en el epidídimo y viaja por el conducto deferente y la uretra. Mide unas 55 milésimas de milímetro y nada gracias a su flagelo. Puede vivir de 3 a 5 días dentro del aparato reproductor femenino.'],
+    corona_radiada:['Capa de células que rodea y nutre al óvulo.','Son células del folículo que acompañan al óvulo al salir del ovario. Los espermatozoides deben abrirse paso entre ellas.'],
+    zona_pelucida:['Cubierta transparente que protege al óvulo y reconoce al espermatozoide.','Está formada por proteínas. Cuando entra un espermatozoide se endurece para que no entre ningún otro.'],
+    membrana:['Controla qué entra y qué sale del óvulo.','El espermatozoide se fusiona con ella para entregar su material genético.'],
+    citoplasma:['Contiene los nutrientes y orgánulos de los primeros días del embrión.','Por eso el óvulo es mucho más grande que el espermatozoide: aporta casi todo el material de la primera célula.'],
+    nucleo:['Guarda el material genético de la madre: 23 cromosomas.','Las células del cuerpo tienen 46 cromosomas; las células sexuales solo la mitad, para que al unirse se forme una célula con 46.'],
+    cuerpo_polar:['Pequeña célula que se forma cuando el óvulo se divide y que no se desarrolla.','Recibe el material genético que sobra en la división (meiosis) y después desaparece.'],
+    granulos_corticales:['Impiden que entre más de un espermatozoide.','Cuando entra el primero, liberan su contenido y endurecen la zona pelúcida.'],
+    acrosoma:['Capucha de la cabeza del espermatozoide con enzimas que perforan las capas del óvulo.','Al tocar la zona pelúcida libera sus enzimas para abrirse paso.'],
+    pieza_intermedia:['Contiene mitocondrias que dan energía para nadar.','Está entre la cabeza y el flagelo.'],
+    flagelo:['Es la cola que impulsa al espermatozoide.','Se agita como un látigo y lo hace avanzar unos milímetros por minuto.'],
+    cigoto:['Es la primera célula de un nuevo ser humano.','Se forma cuando se unen el núcleo del óvulo y el del espermatozoide (los pronúcleos): 23 + 23 = 46 cromosomas. Unas 30 horas después empieza a dividirse mientras viaja hacia el útero.']
+  };
+  const PARTS = {
+    femenino:['ovario','foliculo','ovocito','fimbrias','trompa','utero','endometrio','miometrio','cuello_uterino','vagina'],
+    masculino:['testiculo','tubulos_seminiferos','escroto','epididimo','conducto_deferente','vesicula_seminal','prostata','glandulas_bulbouretrales','uretra','pene','espermatozoide','vejiga'],
+    ovulo:['corona_radiada','zona_pelucida','membrana','citoplasma','nucleo','cuerpo_polar','granulos_corticales'],
+    fecundacion:['espermatozoide','acrosoma','pieza_intermedia','flagelo','corona_radiada','zona_pelucida','cigoto']
+  };
+  const QUIZ = ['femenino:ovario','femenino:trompa','femenino:utero','femenino:endometrio','femenino:cuello_uterino','femenino:fimbrias','masculino:testiculo','masculino:epididimo','masculino:prostata','masculino:conducto_deferente','masculino:vesicula_seminal','ovulo:zona_pelucida','ovulo:corona_radiada','ovulo:nucleo','ovulo:cuerpo_polar'];
+  const QNAME = { ovario:'un ovario', trompa:'una trompa de Falopio', utero:'el útero', endometrio:'el endometrio', cuello_uterino:'el cuello uterino', fimbrias:'las fimbrias', testiculo:'el testículo', epididimo:'el epidídimo', prostata:'la próstata', conducto_deferente:'el conducto deferente', vesicula_seminal:'la vesícula seminal', zona_pelucida:'la zona pelúcida', corona_radiada:'la corona radiada', nucleo:'el núcleo del óvulo', cuerpo_polar:'el cuerpo polar' };
+  return { name:k=>N[k]||k, short:k=>S[k]||N[k]||k, info:k=>I[k], PARTS, QUIZ, QNAME };
+})();
+function repPartList(id){
+  return `<div class="box"><h3>Toca una parte para verla de cerca</h3><div class="ochips">${REPRODATA.PARTS[id].map(k => `<button class="ochip" data-organ="${k}">${REPRODATA.name(k)}</button>`).join('')}</div></div>`;
+}
+const CYCLE = [
+  [1, 5, 'Menstruación', '#C8323F', 'Se desprende el endometrio y sale con un poco de sangre.', 'Varios folículos empiezan a crecer.'],
+  [6, 13, 'Fase folicular', '#E08AA0', 'El endometrio se engrosa de nuevo gracias a los estrógenos.', 'Un folículo madura más que los demás.'],
+  [14, 14, 'Ovulación', '#E0A800', 'El endometrio sigue preparándose.', 'El folículo maduro se rompe y libera el óvulo hacia la trompa.'],
+  [15, 28, 'Fase lútea', '#8E6AD8', 'El endometrio está grueso y listo para recibir un embrión.', 'El cuerpo lúteo produce progesterona. Si no hay fecundación, se reduce y empieza un nuevo ciclo.']
+];
+function cycleSVG(){
+  const W = 420, x0 = 20, x1 = 400, dx = (x1 - x0) / 28, th = d => d <= 5 ? 18 - d * 2.6 : d <= 14 ? 6 + (d - 5) * 2.2 : Math.min(34, 26 + (d - 14) * .6) - (d > 26 ? (d - 26) * 6 : 0);
+  let pts = []; for (let d = 1; d <= 28; d += .25) pts.push(`${(x0 + (d - .5) * dx).toFixed(1)},${(150 - th(d) * 2.4).toFixed(1)}`);
+  const bands = CYCLE.map(([a, b, n, c]) => `<rect x="${(x0 + (a - 1) * dx).toFixed(1)}" y="160" width="${((b - a + 1) * dx).toFixed(1)}" height="16" rx="3" fill="${c}"/>`).join('');
+  const ticks = [1, 5, 10, 14, 20, 28].map(d => `<text x="${(x0 + (d - .5) * dx).toFixed(1)}" y="194" class="ct">${d}</text>`).join('');
+  return `<div class="box cyc"><h3>El ciclo menstrual, día por día</h3>
+    <svg class="hd cycle" viewBox="0 0 ${W} 205" role="img" aria-label="Grosor del endometrio a lo largo de un ciclo de 28 días con sus fases">
+      <text x="20" y="22" class="ct l">Grosor del endometrio</text>
+      <polygon points="${x0},150 ${pts.join(' ')} ${x1},150" class="ca"/><polyline points="${pts.join(' ')}" class="cl"/>
+      ${bands}${ticks}<line id="cyc-mk" x1="0" y1="30" x2="0" y2="178" class="cm"/><circle id="cyc-dot" r="6" class="cd"/>
+    </svg>
+    <label class="tr-lab" for="cyc-d">Día del ciclo: <b id="cyc-v">14</b></label><input type="range" id="cyc-d" min="1" max="28" value="14">
+    <div class="cyc-info" id="cyc-info"></div>
+    <p class="tr-msg">Es un ciclo típico de 28 días. Son normales los ciclos de 21 a 35 días, y en los primeros años después de la primera menstruación suelen ser irregulares.</p></div>`;
+}
+function cycleUpdate(){
+  const inp = panel.querySelector('#cyc-d'); if (!inp) return; const d = +inp.value, x0 = 20, dx = 380 / 28, x = x0 + (d - .5) * dx;
+  const th = d <= 5 ? 18 - d * 2.6 : d <= 14 ? 6 + (d - 5) * 2.2 : Math.min(34, 26 + (d - 14) * .6) - (d > 26 ? (d - 26) * 6 : 0);
+  const ph = CYCLE.find(([a, b]) => d >= a && d <= b);
+  panel.querySelector('#cyc-v').textContent = d;
+  const mk = panel.querySelector('#cyc-mk'); mk.setAttribute('x1', x); mk.setAttribute('x2', x);
+  const dot = panel.querySelector('#cyc-dot'); dot.setAttribute('cx', x); dot.setAttribute('cy', 150 - th * 2.4);
+  panel.querySelector('#cyc-info').innerHTML = `<b style="color:${ph[3]}">${ph[2]}</b><span><em>En el útero:</em> ${ph[4]}</span><span><em>En el ovario:</em> ${ph[5]}</span>`;
+}
+function repExtra(id){
+  if (id === 'femenino') return cycleSVG();
+  if (id === 'masculino') return `<div class="box"><h3>Recorrido de un espermatozoide</h3><ol class="hd-steps"><li>Se forma en los túbulos seminíferos del testículo.</li><li>Madura en el epidídimo durante unas dos semanas.</li><li>Sube por el conducto deferente y rodea la vejiga.</li><li>Recibe los líquidos de la vesícula seminal y la próstata, que forman el semen.</li><li>Sale al exterior por la uretra.</li></ol></div>`;
+  if (id === 'ovulo') return `<div class="tbl-wrap"><table class="mini"><thead><tr><th></th><th>Óvulo</th><th>Espermatozoide</th></tr></thead><tbody>
+    <tr><th>Tamaño</th><td>≈ 0.1 mm, la célula más grande</td><td>≈ 0.055 mm, de las más pequeñas</td></tr><tr><th>Movimiento</th><td>No se mueve por sí mismo</td><td>Nada con su flagelo</td></tr>
+    <tr><th>Cantidad</th><td>Por lo general uno al mes</td><td>Millones cada día</td></tr><tr><th>Cromosomas</th><td>23 (siempre X)</td><td>23 (X o Y)</td></tr><tr><th>Dónde se forma</th><td>Ovario</td><td>Testículo</td></tr></tbody></table></div>`;
+  if (id === 'fecundacion') return `<div class="box"><h3>¿Por qué 23 + 23?</h3><div class="chromo"><span class="cx f"><b>23</b>óvulo<br>22 + X</span><span class="op">+</span><span class="cx m"><b>23</b>espermatozoide<br>22 + X o Y</span><span class="op">=</span><span class="cx z"><b>46</b>cigoto<br>XX o XY</span></div>
+    <p>Las células sexuales se forman por meiosis, una división que reparte los cromosomas a la mitad. Al unirse, el cigoto recupera el número completo.</p></div>`;
+  return '';
+}
+
 /* ---------- estado ---------- */
 const state = { view:'animal', sel:null, labels:true, quiz:null, organ:null, skin:true };
 let savedLabels = true;
@@ -1650,7 +1819,7 @@ function renderPanel(){
     <h2><span class="dot"></span>${fullName(o)}</h2>
     <p class="func"><small>Función</small>${o.func}</p>
     <p>${o.detail}</p>
-    ${isBody()?bodyOrganList(id):isDNA()?dnaPartList(id)+dnaExtra(id):isSen()?senPartList(id)+senExtra(id):''}
+    ${isBody()?bodyOrganList(id):isDNA()?dnaPartList(id)+dnaExtra(id):isSen()?senPartList(id)+senExtra(id):isRep()?repPartList(id)+repExtra(id):''}
     ${o.formula?`<div class="box formula"><h3>${o.formulaT||'Fotosíntesis'}</h3><p>${o.formula}</p></div>`:''}
     <div class="box"><h3>Imagínalo como…</h3><p>${o.analog}</p></div>
     <div class="box"><h3>Dato curioso</h3><p>${o.fact}</p></div>
@@ -1660,6 +1829,7 @@ function renderPanel(){
   </div>`;
   if(isDNA() && id==='traduccion') renderTranslator();
   if(isSen() && id==='oido') toneUpdate();
+  if(isRep() && id==='femenino') cycleUpdate();
 }
 
 function renderSummary(){
@@ -1679,9 +1849,10 @@ const VIEWINFO = {
   agua:['Ecosistemas','Ciclo del agua','Recorre el viaje del agua por el planeta, etapa por etapa.'],
   cuerpo:['Anatomía','Cuerpo humano','Modelo anatómico en 3D con sus ocho sistemas completos. Elige un sistema y toca cualquier órgano.'],
   sentidos:['Anatomía','Los 5 sentidos','Modelos 3D en corte de los órganos de los sentidos, conectados al cerebro y en funcionamiento.'],
+  reproductor:['Reproducción','Aparato reproductor','Modelos 3D en corte del aparato femenino y masculino, del óvulo y de la fecundación.'],
   adn:['Genética','ADN','La molécula de la vida en 3D: su estructura, cómo se copia y cómo se convierte en proteínas.']
 };
-const HOMECARDS = [['animal','Célula animal','Microscopio interactivo','--acc-animal'],['vegetal','Célula vegetal','Microscopio interactivo','--acc-vegetal'],['comparar','Comparar células','Diferencias y semejanzas','--ink'],['agua','Ciclo del agua','Paisaje animado','--acc-agua'],['cuerpo','Cuerpo humano','Modelo anatómico 3D','--acc-cuerpo'],['sentidos','Los 5 sentidos','Órganos en corte 3D','--acc-sentidos'],['adn','ADN','La molécula de la vida','--acc-adn']];
+const HOMECARDS = [['animal','Célula animal','Microscopio interactivo','--acc-animal'],['vegetal','Célula vegetal','Microscopio interactivo','--acc-vegetal'],['comparar','Comparar células','Diferencias y semejanzas','--ink'],['agua','Ciclo del agua','Paisaje animado','--acc-agua'],['cuerpo','Cuerpo humano','Modelo anatómico 3D','--acc-cuerpo'],['sentidos','Los 5 sentidos','Órganos en corte 3D','--acc-sentidos'],['reproductor','Aparato reproductor','Óvulo y fecundación 3D','--acc-repro'],['adn','ADN','La molécula de la vida','--acc-adn']];
 let heroRaf = 0, heroDNA = null;
 function buildHero(){
   const svgH = $('#hero-art'); if (!svgH || svgH.dataset.ok) return; svgH.dataset.ok = '1';
@@ -1766,21 +1937,31 @@ function heroStart(){ buildHero(); cancelAnimationFrame(heroRaf); const t0 = per
 function isBody(){ return state.view==='cuerpo'; }
 function isDNA(){ return state.view==='adn'; }
 function isSen(){ return state.view==='sentidos'; }
-function is3D(){ return isBody()||isDNA()||isSen(); }
-const API3 = { cuerpo:['Body3D','__b3q'], adn:['DNA3D','__d3q'], sentidos:['SENSES3D','__s3q'] };
+function isRep(){ return state.view==='reproductor'; }
+function is3D(){ return isBody()||isDNA()||isSen()||isRep(); }
+const API3 = { cuerpo:['Body3D','__b3q'], adn:['DNA3D','__d3q'], sentidos:['SENSES3D','__s3q'], reproductor:['REPRO3D','__r3q'] };
 function B3(cmd,...a){
   const e=API3[state.view]; if(!e) return; const [nm,q]=e;
   if(nm!=='Body3D') cmd={system:'mode', organ:'part'}[cmd]||cmd;
   const B=window[nm]; if(B){ return typeof B[cmd]==='function' ? B[cmd](...a) : undefined; }
   (window[q]=window[q]||[]).push([cmd,a]);
 }
-function leave3D(){ ['Body3D','DNA3D','SENSES3D'].forEach(n=>window[n]&&window[n].leave()); }
+function leave3D(){ ['Body3D','DNA3D','SENSES3D','REPRO3D'].forEach(n=>window[n]&&window[n].leave()); }
 window.S3cb = {
   pick(k){
     if(!isSen()) return;
     if(state.quiz){ if(k && k!=='cerebro') quizPick(k); return; }
     if(!k){ if(state.organ){ state.organ=null; B3('organ', null); renderPanel(); } return; }
     if(CELLS.sentidos.orgs[k]){ select(k); return; }
+    state.organ=k; B3('organ', k); renderPanel();
+  }
+};
+window.R3cb = {
+  pick(k){
+    if(!isRep()) return;
+    if(state.quiz){ if(k) quizPick(k); return; }
+    if(!k){ if(state.organ){ state.organ=null; B3('organ', null); renderPanel(); } return; }
+    if(CELLS.reproductor.orgs[k]){ select(k); return; }
     state.organ=k; B3('organ', k); renderPanel();
   }
 };
@@ -1877,7 +2058,7 @@ function startHeart(){
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function startQuiz(){
   setSel(null);
-  state.quiz={ids:shuffle(isBody()?BODY.QUIZ:isDNA()?DNADATA.QUIZ:isSen()?SENSEDATA.QUIZ:cell().order).slice(0,6), i:0, score:0, miss:false, lock:false, fb:'', fbc:'', done:false, body:isBody(), dna:isDNA(), sen:isSen(), shown:-1};
+  state.quiz={ids:shuffle(isBody()?BODY.QUIZ:isDNA()?DNADATA.QUIZ:isSen()?SENSEDATA.QUIZ:isRep()?REPRODATA.QUIZ:cell().order).slice(0,6), i:0, score:0, miss:false, lock:false, fb:'', fbc:'', done:false, body:isBody(), dna:isDNA(), sen:isSen()||isRep(), SD:isRep()?REPRODATA:SENSEDATA, ban:isRep()?'#r3banner':'#n3banner', shown:-1};
   if(is3D()) B3('quiz', true);
   svg.classList.add('quiz'); $('#btn-quiz').setAttribute('aria-pressed','true');
   renderQuiz();
@@ -1885,10 +2066,10 @@ function startQuiz(){
 function endQuiz(){
   const was3D=state.quiz&&(state.quiz.body||state.quiz.dna||state.quiz.sen);
   state.quiz=null; if(was3D) B3('quiz', false); setSel(null); svg.classList.remove('quiz'); $('#btn-quiz').setAttribute('aria-pressed','false');
-  $('#quiz-banner').hidden=true; $('#s3banner').hidden=true; $('#d3banner').hidden=true; $('#n3banner').hidden=true; renderPanel();
+  $('#quiz-banner').hidden=true; $('#s3banner').hidden=true; $('#d3banner').hidden=true; $('#n3banner').hidden=true; $('#r3banner').hidden=true; renderPanel();
 }
 function renderQuiz(){
-  const q=state.quiz, C=cell(), banner=q.sen?$('#n3banner'):q.dna?$('#d3banner'):q.body?$('#s3banner'):$('#quiz-banner');
+  const q=state.quiz, C=cell(), banner=q.sen?$(q.ban):q.dna?$('#d3banner'):q.body?$('#s3banner'):$('#quiz-banner');
   if(q.done){
     banner.hidden=true;
     const msg = q.score===q.ids.length?`¡Perfecto! Conoces muy bien ${C.quizTxt||'esta célula'}.`: q.score>=4?'¡Muy bien! Ya casi la dominas.':'Sigue practicando: repasa las partes y vuelve a intentarlo.';
@@ -1898,7 +2079,7 @@ function renderQuiz(){
     return;
   }
   if(q.sen && q.shown!==q.i){ q.shown=q.i; B3('quizShow', q.ids[q.i].split(':')[0]); }
-  const o=q.sen?{name:SENSEDATA.QNAME[q.ids[q.i].split(':')[1]], func:(SENSEDATA.info(q.ids[q.i].split(':')[1])||[''])[0]}:q.dna?{name:DNADATA.QNAME[q.ids[q.i]], func:(DNADATA.info(q.ids[q.i])||[''])[0]}:q.body?{name:BODY.QNAME[q.ids[q.i]], func:(BODY.info(q.ids[q.i])||[''])[0]}:C.orgs[q.ids[q.i]];
+  const o=q.sen?{name:q.SD.QNAME[q.ids[q.i].split(':')[1]], func:(q.SD.info(q.ids[q.i].split(':')[1])||[''])[0]}:q.dna?{name:DNADATA.QNAME[q.ids[q.i]], func:(DNADATA.info(q.ids[q.i])||[''])[0]}:q.body?{name:BODY.QNAME[q.ids[q.i]], func:(BODY.info(q.ids[q.i])||[''])[0]}:C.orgs[q.ids[q.i]];
   banner.hidden=false; banner.innerHTML=`Encuentra: <span>${o.name}</span>`;
   panel.innerHTML=`<div class="pin"><div class="slide-tag"><span>Modo reto · ${C.name}</span><span>Pregunta ${q.i+1} de ${q.ids.length}</span></div>
     <div class="progress"><i style="width:${(q.i/q.ids.length)*100}%"></i></div>
@@ -1910,7 +2091,7 @@ function renderQuiz(){
 function quizPick(id){
   const q=state.quiz; if(q.lock||q.done) return;
   if(q.dna||q.sen){
-    const target=q.sen?q.ids[q.i].split(':')[1]:q.ids[q.i], DS=q.sen?SENSEDATA:DNADATA;
+    const target=q.sen?q.ids[q.i].split(':')[1]:q.ids[q.i], DS=q.sen?q.SD:DNADATA;
     if(id===target){
       if(!q.miss) q.score++;
       q.lock=true; q.fb='¡Correcto! '+(DS.info(id)||[''])[0]; q.fbc='ok'; B3('organ', id); renderQuiz();
@@ -1941,12 +2122,12 @@ function quizPick(id){
 
 /* ---------- vistas ---------- */
 function setView(v){
-  if(!['inicio','animal','vegetal','comparar','agua','cuerpo','sentidos','adn'].includes(v)) v='inicio';
+  if(!['inicio','animal','vegetal','comparar','agua','cuerpo','sentidos','reproductor','adn'].includes(v)) v='inicio';
   toneStop();
-  if(state.quiz){ if(state.quiz.body||state.quiz.dna||state.quiz.sen) B3('quiz', false); state.quiz=null; svg.classList.remove('quiz'); $('#btn-quiz').setAttribute('aria-pressed','false'); $('#quiz-banner').hidden=true; $('#s3banner').hidden=true; $('#d3banner').hidden=true; $('#n3banner').hidden=true; }
+  if(state.quiz){ if(state.quiz.body||state.quiz.dna||state.quiz.sen) B3('quiz', false); state.quiz=null; svg.classList.remove('quiz'); $('#btn-quiz').setAttribute('aria-pressed','false'); $('#quiz-banner').hidden=true; $('#s3banner').hidden=true; $('#d3banner').hidden=true; $('#n3banner').hidden=true; $('#r3banner').hidden=true; }
   state.view=v; state.sel=null; state.organ=null;
-  const body=v==='cuerpo', dna=v==='adn', sen=v==='sentidos';
-  $('#eyepiece').hidden=body||dna||sen; $('#stage3d').hidden=!body; $('#stagedna').hidden=!dna; $('#stagesen').hidden=!sen; $('#btn-skin').hidden=!body; $('#credit3d').hidden=!body;
+  const body=v==='cuerpo', dna=v==='adn', sen=v==='sentidos', rp=v==='reproductor';
+  $('#eyepiece').hidden=body||dna||sen||rp; $('#stage3d').hidden=!body; $('#stagedna').hidden=!dna; $('#stagesen').hidden=!sen; $('#stagerep').hidden=!rp; $('#btn-skin').hidden=!body; $('#credit3d').hidden=!body;
   document.querySelectorAll('.mi').forEach(t=>{ if(t.dataset.view===v) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
   const home=v==='inicio', vi=VIEWINFO[v];
   $('#view-home').hidden=!home; $('#vhead').hidden=home; document.querySelector('.content > main').hidden=home;
@@ -1956,7 +2137,7 @@ function setView(v){
   $('#view-cell').hidden=!isCell; $('#view-compare').hidden=isCell;
   if(isCell){ document.body.dataset.cell=v;
     leave3D();
-    if(body||dna||sen){ $('.lab').classList.toggle('wide', sen); $('#mag').innerHTML=cell().top; B3('setPins', state.labels); B3('enter'); }
+    if(body||dna||sen||rp){ $('.lab').classList.toggle('wide', sen||rp); $('#mag').innerHTML=cell().top; B3('setPins', state.labels); B3('enter'); }
     else { renderCell(); }
     renderChips(); setSel(null); renderPanel(); renderSummary(); }
   else { leave3D(); document.body.dataset.cell='animal'; }
@@ -1993,8 +2174,8 @@ $('#btn-labels').addEventListener('click', e=>{
 });
 $('#btn-quiz').addEventListener('click', ()=>{ state.quiz?endQuiz():startQuiz(); });
 $('#btn-skin').addEventListener('click', e=>{ state.skin=!state.skin; e.currentTarget.setAttribute('aria-pressed', String(state.skin)); B3('setSkin', state.skin); });
-['#s3views','#d3views','#n3views'].forEach(sel=>$(sel).addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; if(b.dataset.z) B3('zoom', parseFloat(b.dataset.z)); else B3('view', b.dataset.v); }));
-panel.addEventListener('input', e=>{ if(e.target.id==='tr-in') renderTranslator(); if(e.target.id==='tone-f') toneUpdate(); });
+['#s3views','#d3views','#n3views','#r3views'].forEach(sel=>$(sel).addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; if(b.dataset.z) B3('zoom', parseFloat(b.dataset.z)); else B3('view', b.dataset.v); }));
+panel.addEventListener('input', e=>{ if(e.target.id==='tr-in') renderTranslator(); if(e.target.id==='tone-f') toneUpdate(); if(e.target.id==='cyc-d') cycleUpdate(); });
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{ if(location.hash==='#'+t.dataset.view) setView(t.dataset.view); else location.hash=t.dataset.view; }));
 window.addEventListener('hashchange', ()=>setView(location.hash.slice(1)));
 
@@ -3311,6 +3492,334 @@ const API = window.SENSES3D = {
   zoom(f){ if (!renderer) return; const t = controls.target, p = camera.position; tweenTo(t.clone(), t.clone().add(p.clone().sub(t).multiplyScalar(f)), .35); }
 };
 (window.__s3q || []).forEach(([c, a]) => API[c](...a)); window.__s3q = [];
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const RD = window.REPRODATA;
+const wrap = document.getElementById('stagerep'), canvas = document.getElementById('crep');
+const elPins = document.getElementById('r3pins'), elTag = document.getElementById('r3tag'), elHover = document.getElementById('r3hover'), elLoad = document.getElementById('r3load');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cb = (n, ...a) => { const f = window.R3cb && window.R3cb[n]; if (f) f(...a); };
+const st = { mode:null, part:null, labels:true, quiz:false };
+let renderer, scene, camera, controls, active = false, raf = 0, tween = null, selT = 0, needFit = false, modeT0 = 0;
+const V = (x=0, y=0, z=0) => new THREE.Vector3(x, y, z);
+const U = { uT:{ value:0 } };
+const MODES = ['femenino','masculino','ovulo','fecundacion'], OVERVIEW = ['femenino','masculino','ovulo'];
+const G = {}, upd = {}, dyn = {};
+const rng = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(11);
+
+/* ---------- utilidades ---------- */
+const P = (hex, o={}) => new THREE.MeshPhysicalMaterial(Object.assign({ color:hex, roughness:.45, metalness:0, clearcoat:.4, clearcoatRoughness:.35 }, o));
+function addFlow(mat, glow, freq, speed, amp=1){
+  const u = { uFC:{ value:new THREE.Color(glow) }, uFreq:{ value:freq }, uSpeed:{ value:speed }, uAmp:{ value:reduce ? 0 : amp } };
+  mat.userData.flow = u;
+  mat.onBeforeCompile = sh => {
+    Object.assign(sh.uniforms, u, U);
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vFU;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvFU = uv.x;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vFU; uniform float uT, uFreq, uSpeed, uAmp; uniform vec3 uFC;')
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n{ float ff = fract(vFU * uFreq - uT * uSpeed); float gg = smoothstep(0.0, 0.08, ff) * (1.0 - smoothstep(0.08, 0.32, ff)); totalEmissiveRadiance += uFC * gg * uAmp; }');
+  };
+  mat.customProgramCacheKey = () => 'uvflow';
+  return mat;
+}
+function add(g, geo, hex, keys, o={}){
+  const mat = o.material || P(hex, o.mat || {});
+  if (o.clip) { mat.clippingPlanes = [g.userData.plane]; mat.side = THREE.DoubleSide; }
+  if (o.flow) addFlow(mat, ...o.flow);
+  const m = o.count ? new THREE.InstancedMesh(geo, mat, o.count) : new THREE.Mesh(geo, mat);
+  if (o.pos) m.position.copy(o.pos); if (o.rot) m.rotation.set(...o.rot); if (o.scale) m.scale.copy(o.scale);
+  m.userData.keys = keys; m.userData.low = !!o.low; m.userData.hex = hex; m.userData.op0 = mat.opacity; m.userData.tr0 = mat.transparent; m.userData.dw0 = mat.depthWrite;
+  m.userData.em0 = mat.emissive ? mat.emissive.clone() : null;
+  (o.parent || g).add(m); g.userData.meshes.push(m); return m;
+}
+const curve = pts => new THREE.CatmullRomCurve3(pts.map(p => p.isVector3 ? p : V(...p)));
+const tube = (pts, r, seg=64, rad=12) => new THREE.TubeGeometry(curve(pts), seg, r, rad, false);
+function vtube(c, n, rFn, radial=16){
+  const fr = c.computeFrenetFrames(n, false), pos = [], uv = [], idx = [];
+  for (let i = 0; i <= n; i++) { const t = i / n, p = c.getPointAt(t), N = fr.normals[i], B = fr.binormals[i];
+    for (let j = 0; j <= radial; j++) { const a = j / radial * Math.PI * 2, r = rFn(t, a); pos.push(p.x + r * (Math.cos(a) * N.x + Math.sin(a) * B.x), p.y + r * (Math.cos(a) * N.y + Math.sin(a) * B.y), p.z + r * (Math.cos(a) * N.z + Math.sin(a) * B.z)); uv.push(t, j / radial); } }
+  for (let i = 0; i < n; i++) for (let j = 0; j < radial; j++) { const a = i * (radial + 1) + j, b = a + radial + 1; idx.push(a, b, a + 1, b, b + 1, a + 1); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals(); return g;
+}
+function deform(geo, fn){ const p = geo.attributes.position, v = V(); for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); fn(v); p.setXYZ(i, v.x, v.y, v.z); } geo.computeVertexNormals(); return geo; }
+function newGroup(name){ const g = new THREE.Group(); g.userData = { mode:name, meshes:[], plane:new THREE.Plane(V(0, 0, -1), 0), pins:{} }; g.visible = false; scene.add(g); G[name] = g; return g; }
+
+/* ---------- 1. Aparato femenino (vista frontal en corte) ---------- */
+function buildFemale(){
+  const g = newGroup('femenino'), pin = g.userData.pins;
+  const uterus = (k, zk) => deform(new THREE.SphereGeometry(1, 72, 56), v => { const w = .7 + .25 * v.y; v.x *= w * k; v.z *= zk * (.8 + .2 * v.y); v.y = v.y * 1.1 * k; });
+  add(g, uterus(1, .62), 0xD8737D, ['utero', 'miometrio'], { pos:V(0, .62, 0), clip:true, mat:{ roughness:.5, sheen:.5, sheenColor:new THREE.Color(0xffb0b8) } });
+  add(g, deform(new THREE.SphereGeometry(1, 64, 48), v => { const w = .55 + .4 * Math.max(v.y, -.6); v.x *= .62 * w; v.z *= .22; v.y = v.y * .7; }), 0xB02F3E, ['endometrio', 'utero'], { pos:V(0, .72, 0), clip:true, mat:{ roughness:.7, sheen:.8, sheenColor:new THREE.Color(0xff6070) } });
+  add(g, new THREE.CylinderGeometry(.36, .3, .55, 48, 1, true), 0xD8737D, ['cuello_uterino'], { pos:V(0, -.62, 0), clip:true });
+  add(g, new THREE.CylinderGeometry(.07, .07, .58, 16, 1, true), 0xB02F3E, ['cuello_uterino'], { pos:V(0, -.62, -.02), clip:true });
+  add(g, deform(new THREE.CylinderGeometry(.42, .5, 1.45, 48, 8, true), v => { v.z *= .55; }), 0xE69DA4, ['vagina'], { pos:V(0, -1.62, 0), clip:true, mat:{ roughness:.55 } });
+  const tubes = [];
+  [1, -1].forEach(s => {
+    const c = curve([[s * .82, 1.35, 0], [s * 1.3, 1.62, 0], [s * 1.95, 1.62, 0], [s * 2.55, 1.28, 0], [s * 2.78, .72, 0]]); tubes.push(c);
+    add(g, vtube(c, 140, t => .09 + .08 * Math.min(1, Math.max(0, (t - .35) / .5)), 18), 0xE2848F, ['trompa'], { flow:[0xFFD2DA, 7, .35, .45], mat:{ roughness:.4, clearcoat:.6 } });
+    const end = c.getPointAt(1);
+    for (let k = 0; k < 8; k++) { const a = -Math.PI * .1 + k / 7 * Math.PI * 1.2, d = V(Math.cos(a) * .32 * s, -Math.sin(a) * .18 - .26, Math.sin(k * 1.7) * .14);
+      add(g, tube([end, end.clone().add(d.clone().multiplyScalar(.55)).add(V(0, 0, .04)), end.clone().add(d)], .03, 14, 6), 0xEC9AA4, ['fimbrias']); }
+    const ov = V(s * 2.28, .18, 0);
+    add(g, new THREE.SphereGeometry(1, 48, 32), 0xEBC3B5, ['ovario'], { pos:ov, scale:V(.44, .28, .26), mat:{ roughness:.6 } });
+    add(g, tube([[s * 1.88, .26, 0], [s * 1.4, .55, 0], [s * .86, .78, 0]], .045, 30, 8), 0xD8A7A0, ['ovario']);
+    const fol = add(g, new THREE.SphereGeometry(1, 14, 10), 0xFFF1CF, ['foliculo'], { count:16, mat:{ transparent:true, opacity:.85, roughness:.2 } }), m4 = new THREE.Matrix4();
+    for (let i = 0; i < 16; i++) { const a = rng() * Math.PI * 2, b = (rng() - .5) * 2.2, p = V(.44 * Math.cos(a) * Math.cos(b / 2), .28 * Math.sin(b / 2) * .9, .26 * Math.sin(a) * Math.cos(b / 2)), r = .025 + rng() * .035; m4.compose(ov.clone().add(p), new THREE.Quaternion(), V(r, r, r)); fol.setMatrixAt(i, m4); }
+    if (s > 0) add(g, new THREE.SphereGeometry(.13, 24, 16), 0xFFE6A8, ['foliculo'], { pos:ov.clone().add(V(.22, .18, .08)), mat:{ transparent:true, opacity:.9, roughness:.15, emissive:0x553300, emissiveIntensity:.3 } });
+    else add(g, new THREE.SphereGeometry(.1, 20, 14), 0xF2C230, ['foliculo'], { pos:ov.clone().add(V(-.28, .1, .1)), mat:{ roughness:.5 } });
+  });
+  const egg = add(g, new THREE.SphereGeometry(.075, 20, 14), 0xFFF6E8, ['ovocito'], { mat:{ emissive:0xFFC56A, emissiveIntensity:.8, roughness:.2 } });
+  const halo = add(g, new THREE.SphereGeometry(.13, 20, 14), 0xFFE0A0, ['ovocito'], { mat:{ transparent:true, opacity:.3, depthWrite:false } });
+  const path = curve([V(2.5, .36, .08), V(2.78, .55, .05), ...Array.from({ length:12 }, (_, i) => tubes[0].getPointAt(1 - i / 11)), V(.4, 1.25, 0), V(0, .9, 0)]);
+  Object.assign(pin, { utero:V(0,1.9,0), endometrio:V(.12,.9,0), miometrio:V(-.82,.35,0), cuello_uterino:V(.45,-.62,0), vagina:V(.55,-1.85,0), trompa:V(-1.75,1.82,0), fimbrias:V(-3.05,.7,0), ovario:V(-2.3,-.2,.1), foliculo:V(2.55,.5,.1) });
+  dyn.femenino = () => egg.visible ? egg.position.clone() : null;
+  upd.femenino = t => {
+    const u = reduce ? .45 : ((t - modeT0) * .1) % 1, p = path.getPointAt(u);
+    egg.position.copy(p); halo.position.copy(p); const s = u > .94 ? (1 - u) / .06 : u < .04 ? u / .04 : 1; egg.scale.setScalar(s); halo.scale.setScalar(s);
+  };
+  return g;
+}
+
+/* ---------- 2. Aparato masculino (vista lateral en corte) ---------- */
+function buildMale(){
+  const g = newGroup('masculino'), pin = g.userData.pins;
+  add(g, new THREE.SphereGeometry(1, 48, 32), 0xEBD38A, ['vejiga'], { pos:V(.25, 1.65, 0), scale:V(.82, .72, .62), clip:true, mat:{ transparent:true, opacity:.55, depthWrite:false, roughness:.3 } });
+  add(g, new THREE.CapsuleGeometry(.2, .5, 8, 16), 0xE9DFC9, [], { pos:V(-.78, .55, -.1), rot:[0, 0, .35], low:true, mat:{ roughness:.7 } });
+  add(g, new THREE.SphereGeometry(1, 40, 28), 0xC98A6E, ['prostata'], { pos:V(.32, .55, 0), scale:V(.42, .36, .38), clip:true, mat:{ roughness:.55 } });
+  const sv = curve([[.95, 1.75, -.08], [1.05, 1.35, -.06], [.85, 1.0, -.04], [.55, .8, 0]]);
+  add(g, vtube(sv, 90, (t, a) => .1 + .035 * Math.sin(t * 40) * Math.cos(a * 2), 16), 0xD8A066, ['vesicula_seminal'], { mat:{ roughness:.45 } });
+  const testis = V(-.62, -1.85, 0);
+  add(g, new THREE.SphereGeometry(1, 48, 32), 0xE2BFB0, ['testiculo'], { pos:testis, scale:V(.36, .48, .32), clip:true, mat:{ roughness:.5 } });
+  for (let k = 0; k < 9; k++) { const pts = []; for (let i = 0; i <= 18; i++) { const a = i / 18 * Math.PI * 2 * 1.5 + k; pts.push(V(testis.x + (.06 + .2 * (k / 9)) * Math.cos(a) * .9, testis.y - .36 + i / 18 * .72, -.06 + .05 * Math.sin(a * 2))); }
+    add(g, tube(pts, .022, 60, 6), 0xC9745F, ['tubulos_seminiferos']); }
+  const ep = curve([[-.42, -1.42, -.02], [-.3, -1.62, -.02], [-.26, -1.95, -.02], [-.34, -2.25, -.02], [-.5, -2.38, -.02]]);
+  add(g, vtube(ep, 140, (t, a) => .09 * (1 - .4 * t) + .025 * Math.sin(t * 60 + a), 14), 0xB9735E, ['epididimo']);
+  add(g, new THREE.SphereGeometry(1, 40, 28), 0xE0AE96, ['escroto'], { pos:testis.clone().add(V(-.05, -.05, 0)), scale:V(.58, .72, .5), clip:true, mat:{ transparent:true, opacity:.28, depthWrite:false, roughness:.6 } });
+  const vasPts = [[-.5, -2.36, -.02], [-.62, -2.2, 0], [-.4, -1.45, .02], [-.3, -.9, .05], [-.6, -.1, .08], [-.85, .9, .05], [-.55, 2.2, .02], [.3, 2.45, 0], [.95, 2.05, -.05], [1.0, 1.5, -.05], [.78, 1.0, -.02], [.5, .75, 0]];
+  add(g, tube(vasPts, .045, 200, 10), 0xE8CBA6, ['conducto_deferente'], { flow:[0xFFFFFF, 9, .5, .45] });
+  const ur = [[.3, 1.0, 0], [.32, .55, 0], [.25, .1, 0], [-.05, -.18, 0], [-.55, -.3, 0], [-1.0, -.62, 0], [-1.22, -1.15, 0], [-1.28, -1.62, 0]];
+  add(g, tube(ur, .045, 160, 10), 0xF2D27A, ['uretra'], { flow:[0xFFFFFF, 7, .5, .4] });
+  const pc = curve([[-.35, -.18, 0], [-.85, -.48, 0], [-1.18, -1.0, 0], [-1.26, -1.45, 0]]);
+  add(g, vtube(pc, 100, () => .25, 28), 0xD99784, ['pene'], { clip:true, mat:{ roughness:.5, sheen:.5, sheenColor:new THREE.Color(0xffc0a8) } });
+  add(g, new THREE.SphereGeometry(1, 36, 24), 0xD98A86, ['pene'], { pos:V(-1.27, -1.6, 0), scale:V(.28, .26, .28), clip:true });
+  add(g, new THREE.SphereGeometry(.055, 16, 12), 0xE6B07A, ['glandulas_bulbouretrales'], { pos:V(.1, .05, -.05) });
+  add(g, new THREE.SphereGeometry(.055, 16, 12), 0xE6B07A, ['glandulas_bulbouretrales'], { pos:V(.2, .12, -.12) });
+  const route = curve([testis.clone().add(V(0, .1, -.05)), V(-.42, -1.45, -.02), ...ep.getPoints(10), ...vasPts.slice(1).map(p => V(...p)), V(.32, .5, 0), ...ur.slice(2).map(p => V(...p))]);
+  const sp = add(g, new THREE.SphereGeometry(1, 12, 8), 0xFFFFFF, ['espermatozoide'], { count:22, mat:{ emissive:0xBFD8FF, emissiveIntensity:.7, roughness:.2 } });
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion();
+  Object.assign(pin, { vejiga:V(.3,2.25,0), prostata:V(.75,.45,0), vesicula_seminal:V(1.3,1.25,0), conducto_deferente:V(-1.05,.6,0), uretra:V(-.15,-.05,.1), pene:V(-1.6,-1.0,0), testiculo:V(-.95,-1.95,0), tubulos_seminiferos:V(-.62,-1.6,.05), epididimo:V(-.05,-1.9,0), escroto:V(-.75,-2.55,0), glandulas_bulbouretrales:V(.45,.05,0), espermatozoide:V(-.85,-.1,.1) });
+  upd.masculino = t => {
+    for (let i = 0; i < 22; i++) { const u = reduce ? i / 22 : ((t - modeT0) * .06 + i / 22) % 1, p = route.getPointAt(u), tg = route.getTangentAt(u);
+      q.setFromUnitVectors(V(0, 1, 0), tg); m4.compose(p, q, V(.022, .05, .022)); sp.setMatrixAt(i, m4); }
+    sp.instanceMatrix.needsUpdate = true;
+  };
+  return g;
+}
+
+/* ---------- 3. Óvulo (corte) ---------- */
+function buildOvum(g, prefix=''){
+  const pin = g.userData.pins, out = {};
+  out.cyto = add(g, new THREE.SphereGeometry(1, 64, 48), 0xF3E2C2, ['citoplasma'], { clip:true, mat:{ roughness:.55, sheen:.4, sheenColor:new THREE.Color(0xfff2d8) } });
+  add(g, new THREE.SphereGeometry(1.025, 64, 48), 0xE8C79A, ['membrana'], { clip:true, mat:{ transparent:true, opacity:.6, roughness:.3 } });
+  out.zona = add(g, new THREE.SphereGeometry(1.24, 64, 48), 0xCFE6F2, ['zona_pelucida'], { clip:true, mat:{ transparent:true, opacity:.4, depthWrite:false, roughness:.15, clearcoat:1 } });
+  const cor = add(g, new THREE.SphereGeometry(1, 12, 10), 0xF0B49E, ['corona_radiada'], { count:300, clip:true, mat:{ roughness:.5 } }), m4 = new THREE.Matrix4(), q = new THREE.Quaternion();
+  for (let i = 0; i < 300; i++) { const u = rng() * 2 - 1, a = rng() * Math.PI * 2, r = 1.42 + rng() * .28, d = V(Math.sqrt(1 - u * u) * Math.cos(a), u, Math.sqrt(1 - u * u) * Math.sin(a));
+    q.setFromUnitVectors(V(0, 1, 0), d); m4.compose(d.clone().multiplyScalar(r), q, V(.08, .16, .08)); cor.setMatrixAt(i, m4); }
+  const gr = add(g, new THREE.SphereGeometry(1, 8, 6), 0xE79A2E, ['granulos_corticales'], { count:160, clip:true, mat:{ emissive:0x442200, emissiveIntensity:.3 } });
+  for (let i = 0; i < 160; i++) { const u = rng() * 2 - 1, a = rng() * Math.PI * 2, d = V(Math.sqrt(1 - u * u) * Math.cos(a), u, Math.sqrt(1 - u * u) * Math.sin(a)).multiplyScalar(.93); m4.compose(d, new THREE.Quaternion(), V(.028, .028, .028)); gr.setMatrixAt(i, m4); }
+  out.gr = gr;
+  out.nuc = add(g, new THREE.SphereGeometry(.27, 40, 28), 0xA98BE0, ['nucleo'], { pos:V(-.1, .12, -.05), clip:true, mat:{ roughness:.4, transparent:true, opacity:.9 } });
+  for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2; add(g, new THREE.CapsuleGeometry(.018, .09, 4, 8), 0x5B3BB0, ['nucleo'], { pos:V(-.1 + .1 * Math.cos(a), .12 + .1 * Math.sin(a), -.08), rot:[0, 0, a + .6] }); }
+  out.polar = add(g, new THREE.SphereGeometry(.17, 28, 20), 0xF0D9B4, ['cuerpo_polar'], { pos:V(.66, .86, -.12), mat:{ roughness:.5 } });
+  Object.assign(pin, { corona_radiada:V(-1.35,1.25,0), zona_pelucida:V(-1.2,-.4,0), membrana:V(.75,-.62,0), citoplasma:V(.45,.1,0), nucleo:V(-.1,.45,0), cuerpo_polar:V(.85,1.12,0), granulos_corticales:V(-.62,-.62,0) });
+  return out;
+}
+function buildEgg(){ const g = newGroup('ovulo'); const o = buildOvum(g); upd.ovulo = t => { if (!reduce) o.nuc.scale.setScalar(1 + .03 * Math.sin(t * 1.4)); }; return g; }
+
+/* ---------- 4. Fecundación ---------- */
+function buildFert(){
+  const g = newGroup('fecundacion'), pin = g.userData.pins, o = buildOvum(g);
+  const N = 12, SEG = 20, sperm = [];
+  const heads = add(g, new THREE.SphereGeometry(1, 20, 14), 0xEEF2FA, ['espermatozoide'], { count:N, mat:{ roughness:.25, clearcoat:.8 } });
+  const acro = add(g, new THREE.SphereGeometry(1, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2.4), 0x6EA8FF, ['acrosoma'], { count:N, mat:{ roughness:.3, emissive:0x113366, emissiveIntensity:.3 } });
+  const mid = add(g, new THREE.CylinderGeometry(1, 1, 1, 10), 0xF2B33D, ['pieza_intermedia'], { count:N });
+  const tail = add(g, new THREE.SphereGeometry(1, 8, 6), 0xDCE3EE, ['flagelo'], { count:N * SEG });
+  for (let i = 0; i < N; i++) { const a = -Math.PI * .1 + (i / (N - 1) - .5) * Math.PI * 1.25, el = (rng() - .5) * .9; sperm.push({ dir:V(-Math.cos(a) * Math.cos(el), Math.sin(a) * .8 + .1, Math.sin(el) * .6 - .1).normalize(), ph:rng() * 6, win:i === 5 }); }
+  const pro = [add(g, new THREE.SphereGeometry(.16, 24, 16), 0x6EA8FF, ['cigoto'], { mat:{ emissive:0x224488, emissiveIntensity:.4 } }), add(g, new THREE.SphereGeometry(.18, 24, 16), 0xC48BE0, ['cigoto'], { mat:{ emissive:0x442266, emissiveIntensity:.4 } })];
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), Y = V(0, 1, 0);
+  Object.assign(pin, { espermatozoide:V(-3.1,.8,0), acrosoma:V(-2.4,1.25,0), pieza_intermedia:V(-2.9,-.5,0), flagelo:V(-3.6,-.2,0), cigoto:V(.35,-.45,.2) });
+  dyn.fecundacion = () => sperm.win ? sperm.win.clone() : null;
+  upd.fecundacion = t => {
+    const T = reduce ? 6.5 : (t - modeT0) % 13;
+    const fus = Math.min(1, Math.max(0, (T - 8) / 3));
+    o.zona.material.emissive.set(0xffa040).multiplyScalar(Math.max(0, 1 - Math.abs(T - 7.6) / .8) * .8);
+    o.gr.visible = T < 7.4; o.nuc.visible = T < 8;
+    pro[0].visible = pro[1].visible = T >= 8;
+    pro[0].position.set(.55 - .5 * fus, -.3 + .35 * fus, -.05); pro[1].position.set(-.45 + .4 * fus, .3 - .25 * fus, -.05);
+    pro.forEach(p => p.scale.setScalar(T >= 11 ? 1.25 : 1));
+    sperm.forEach((s, i) => {
+      const arrive = s.win ? 7 : 5.5 + (i % 4) * .4, k = Math.min(1, T / arrive), e = 1 - Math.pow(1 - k, 2);
+      let r = s.win ? 4.6 - 3.5 * e : 4.6 - 2.85 * e; if (s.win && T > 7) r = Math.max(.95, 1.1 - (T - 7) * .3);
+      const wob = (reduce ? 0 : .12 * Math.sin(t * 3 + s.ph)) * (1 - e * .6), dir = s.dir.clone().add(V(0, wob, wob * .5)).normalize();
+      const head = dir.clone().multiplyScalar(r), back = dir.clone();
+      if (s.win) sperm.win = head;
+      const fade = s.win && T > 8 ? Math.max(0, 1 - (T - 8)) : 1;
+      q.setFromUnitVectors(Y, dir.clone().negate());
+      m4.compose(head, q, V(.075, .11, .05).multiplyScalar(fade || .0001)); heads.setMatrixAt(i, m4);
+      m4.compose(head.clone().addScaledVector(dir, -.025), q, V(.078, .1, .052).multiplyScalar(fade || .0001)); acro.setMatrixAt(i, m4);
+      const mp = head.clone().addScaledVector(back, .17); m4.compose(mp, q, V(.022, .12, .022).multiplyScalar(fade || .0001)); mid.setMatrixAt(i, m4);
+      const side = V().crossVectors(back, V(0, 0, 1)).normalize();
+      for (let j = 0; j < SEG; j++) { const d = .24 + j * .045, amp = (reduce ? 0 : .06) * (j / SEG) * (T > 7.5 && !s.win ? .4 : 1), w = Math.sin(t * 14 + s.ph - j * .55) * amp;
+        const pp = head.clone().addScaledVector(back, d).addScaledVector(side, w), sc = .018 * (1 - j / SEG * .5) * fade;
+        m4.compose(pp, new THREE.Quaternion(), V(sc || .0001, sc || .0001, sc || .0001)); tail.setMatrixAt(i * SEG + j, m4); }
+    });
+    [heads, acro, mid, tail].forEach(m => m.instanceMatrix.needsUpdate = true);
+  };
+  return g;
+}
+
+/* ---------- disposición ---------- */
+const SLOTS = { femenino:V(-4.2, 0, 0), masculino:V(0, 0, 0), ovulo:V(4.1, 0, 0) };
+function measure(){
+  MODES.forEach(s => { const g = G[s], b = new THREE.Box3(), ba = new THREE.Box3(); g.position.set(0, 0, 0); g.scale.set(1, 1, 1); g.updateMatrixWorld(true);
+    g.userData.meshes.forEach(m => { if (m.isInstancedMesh) { m.computeBoundingBox && m.computeBoundingBox(); } ba.expandByObject(m); if (!m.userData.low) b.expandByObject(m); });
+    if (s === 'fecundacion') { b.set(V(-4.2, -2.2, -1), V(1.9, 2.4, 1)); ba.copy(b); }
+    g.userData.center = b.getCenter(V()); g.userData.size = b.getSize(V()); g.userData.centerAll = ba.getCenter(V()); g.userData.sizeAll = ba.getSize(V()); });
+}
+const cur = {}, tgt = {};
+function targets(){
+  MODES.forEach(s => {
+    const u = G[s].userData, ov = !st.mode && !st.quiz && OVERVIEW.includes(s), sel = st.mode === s;
+    const sc = ov ? 3.3 / Math.max(u.sizeAll.x, u.sizeAll.y * 1.0) : sel ? 1 : 0;
+    tgt[s] = { pos: ov ? SLOTS[s].clone().addScaledVector(u.centerAll, -sc) : u.center.clone().multiplyScalar(-1), s: sc };
+    if (!cur[s]) cur[s] = { pos:tgt[s].pos.clone(), s:tgt[s].s };
+  });
+}
+function stepLayout(dt){
+  const k = 1 - Math.pow(.0008, dt);
+  MODES.forEach(s => { const c = cur[s], t = tgt[s]; c.pos.lerp(t.pos, k); c.s += (t.s - c.s) * k; const g = G[s]; g.visible = c.s > .01; g.position.copy(c.pos); g.scale.setScalar(Math.max(c.s, .0001)); g.userData.plane.constant = g.position.z; });
+}
+
+/* ---------- arranque ---------- */
+function init(){
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true }); } catch(e) { elLoad.textContent = 'Este dispositivo no puede mostrar gráficos 3D (WebGL).'; return false; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.localClippingEnabled = true;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
+  scene = new THREE.Scene(); scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(renderer), .04).texture;
+  camera = new THREE.PerspectiveCamera(30, 4 / 3, .05, 200); camera.position.set(0, 0, 18);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x3a4650, .45));
+  const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(3, 5, 7); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xcfe2ff, .8); rim.position.set(-4, 2, -5); scene.add(rim);
+  buildFemale(); buildMale(); buildEgg(); buildFert(); measure();
+  MODES.forEach(s => G[s].userData.meshes.forEach(m => { m.userData.p0 = m.position.clone(); }));
+  controls = new OrbitControls(camera, canvas); controls.enableDamping = true; controls.dampingFactor = .08; controls.minDistance = 1.5; controls.maxDistance = 40; controls.screenSpacePanning = true;
+  controls.addEventListener('start', () => { tween = null; });
+  new ResizeObserver(resize).observe(wrap); resize(); bindPointer();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && active) loop(); });
+  targets(); elLoad.hidden = true; return true;
+}
+function resize(){ if (!renderer) return; const w = wrap.clientWidth, h = wrap.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+function fit(){
+  let c, w, h;
+  if (!st.mode && !st.quiz) { c = V(0, 0, 0); w = 12.2; h = 5.4; }
+  else { const u = G[st.mode].userData; c = V(); w = u.size.x * 1.18; h = u.size.y * 1.2; }
+  const fov = camera.fov * Math.PI / 180, d = Math.max(h, w / camera.aspect) / 2 / Math.tan(fov / 2) * 1.1;
+  tweenTo(c, c.clone().addScaledVector(V(0, .08, 1).normalize(), d));
+}
+function tweenTo(target, pos, dur=1.1){ tween = { t0:performance.now(), dur:dur * 1000, ft:controls.target.clone(), fp:camera.position.clone(), tt:target, tp:pos }; }
+function stepTween(now){ if (!tween) return; const k = Math.min(1, (now - tween.t0) / tween.dur), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+  controls.target.lerpVectors(tween.ft, tween.tt, e); camera.position.lerpVectors(tween.fp, tween.tp, e); if (k >= 1) tween = null; }
+
+/* ---------- resaltado ---------- */
+function applyHighlight(t){
+  if (!st.mode) return;
+  const g = G[st.mode], lift = st.part ? Math.min(1, (t - selT) / .4) : 0;
+  g.userData.meshes.forEach(m => {
+    const on = st.part && m.userData.keys.includes(st.part), mat = m.material;
+    if (st.part && !on) { mat.transparent = true; mat.opacity = Math.min(m.userData.op0, m.userData.low ? .12 : .16); mat.depthWrite = false; }
+    else { mat.transparent = m.userData.tr0; mat.opacity = m.userData.op0; mat.depthWrite = m.userData.dw0; }
+    if (on) { if (!m.isInstancedMesh) m.position.z += .18 * lift; if (mat.emissive) mat.emissive.set(m.userData.hex).multiplyScalar(.18 + (reduce ? 0 : .1 * Math.sin(t * 3.4))); }
+  });
+}
+
+/* ---------- etiquetas ---------- */
+let pinEls = [];
+function buildPins(){
+  elPins.innerHTML = ''; pinEls = [];
+  if (!st.labels || st.quiz) return;
+  const list = st.mode ? (RD.PARTS[st.mode] || []) : OVERVIEW;
+  list.forEach(k => { const b = document.createElement('button'); b.type = 'button'; b.className = 'pin3'; b.innerHTML = '<i></i><span></span>';
+    b.addEventListener('click', e => { e.stopPropagation(); cb('pick', k); }); elPins.appendChild(b); pinEls.push([b, k]); });
+}
+function worldPin(k){
+  if (!st.mode || st.quiz) { return SLOTS[k] ? SLOTS[k].clone().add(V(0, 2.0, 0)) : null; }
+  const g = G[st.mode];
+  if (k === 'ovocito' && dyn.femenino) { const p = dyn.femenino(); return p ? g.localToWorld(p.add(V(0, .2, 0))) : null; }
+  const p = g.userData.pins[k]; return p ? g.localToWorld(p.clone()) : null;
+}
+function proj(p){ const v = p.clone().project(camera); return [(v.x * .5 + .5) * wrap.clientWidth, (-v.y * .5 + .5) * wrap.clientHeight, v.z]; }
+function placePins(){
+  for (const [b, k] of pinEls) { const p = worldPin(k); if (!p) { b.classList.add('off'); continue; }
+    const [x, y, z] = proj(p), left = x > wrap.clientWidth * .62; b.querySelector('span').textContent = RD.short(k);
+    b.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(${left ? '-100%' : '0'}, -50%)`; b.classList.toggle('left', left); b.classList.toggle('off', z > 1 || (!!st.part && st.part !== k)); }
+  if (st.part) { const p = worldPin(st.part); if (p) { const [x, y, z] = proj(p); elTag.hidden = z > 1; elTag.textContent = RD.name(st.part); elTag.style.transform = `translate(${x.toFixed(1)}px, ${(y - 16).toFixed(1)}px) translate(-50%, -100%)`; } else elTag.hidden = true; }
+  else elTag.hidden = true;
+}
+
+/* ---------- puntero ---------- */
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+function modeOf(o){ while (o) { if (o.userData && o.userData.mode) return o.userData.mode; o = o.parent; } return null; }
+function pickAt(cx, cy){
+  const r = canvas.getBoundingClientRect(); ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1); ray.setFromCamera(ndc, camera);
+  const ov = !st.mode && !st.quiz, groups = ov ? OVERVIEW.map(s => G[s]) : [G[st.mode]];
+  const objs = []; groups.forEach(g => g.userData.meshes.forEach(m => { if (m.visible && (ov || !m.userData.low || m.userData.keys.length)) objs.push(m); }));
+  const hits = ray.intersectObjects(objs, false).filter(h => { const md = modeOf(h.object), pl = md ? G[md].userData.plane : null; return !(pl && h.object.material.clippingPlanes && h.point.z > pl.constant + 1e-3); });
+  if (!hits.length) return null;
+  if (ov) return modeOf(hits[0].object);
+  const firm = hits.find(h => !h.object.userData.low && h.object.userData.keys.length) || hits.find(h => h.object.userData.keys.length);
+  if (!firm) return null; const ks = firm.object.userData.keys, PA = RD.PARTS[st.mode] || []; return ks.find(k => PA.includes(k)) || ks[0];
+}
+function bindPointer(){
+  let down = null, ht = 0;
+  canvas.addEventListener('pointerdown', e => { down = { x:e.clientX, y:e.clientY, t:performance.now() }; });
+  canvas.addEventListener('pointerup', e => { if (!down) return; const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y), quick = performance.now() - down.t < 600; down = null; if (moved > 6 || !quick) return; cb('pick', pickAt(e.clientX, e.clientY)); });
+  canvas.addEventListener('pointermove', e => {
+    if (e.pointerType === 'touch' || st.quiz) { elHover.hidden = true; return; } const n = performance.now(); if (n - ht < 70) return; ht = n;
+    const k = pickAt(e.clientX, e.clientY); canvas.style.cursor = k ? 'pointer' : 'grab'; if (!k) { elHover.hidden = true; return; }
+    const r = wrap.getBoundingClientRect(); elHover.hidden = false; elHover.textContent = RD.name(k); elHover.style.transform = `translate(${(e.clientX - r.left + 14).toFixed(0)}px, ${(e.clientY - r.top + 12).toFixed(0)}px)`;
+  });
+  canvas.addEventListener('pointerleave', () => { elHover.hidden = true; });
+}
+
+/* ---------- bucle ---------- */
+let last = performance.now();
+function loop(){
+  cancelAnimationFrame(raf); if (!active || document.hidden) return; raf = requestAnimationFrame(loop);
+  const now = performance.now(), dt = Math.min(.1, (now - last) / 1000), t = now / 1000; last = now;
+  U.uT.value = t; stepLayout(dt);
+  MODES.forEach(s => { const g = G[s]; if (!g.visible) return; g.userData.meshes.forEach(m => { if (m.userData.p0) m.position.copy(m.userData.p0); if (m.userData.em0) m.material.emissive.copy(m.userData.em0); }); upd[s] && upd[s](t); });
+  applyHighlight(t);
+  if (needFit) { needFit = false; fit(); buildPins(); }
+  stepTween(now); controls.update(); placePins(); renderer.render(scene, camera);
+}
+
+/* ---------- interfaz pública ---------- */
+const API = window.REPRO3D = {
+  enter(){ active = true; if (!renderer && !init()) return; resize(); targets(); needFit = true; last = performance.now(); loop(); },
+  leave(){ active = false; cancelAnimationFrame(raf); if (elHover) elHover.hidden = true; },
+  mode(m){ st.mode = MODES.includes(m) ? m : null; st.part = null; modeT0 = performance.now() / 1000; if (renderer) { targets(); needFit = true; } },
+  part(k){ st.part = k || null; selT = performance.now() / 1000; if (!renderer) return; if (!k) return fit(); },
+  quiz(on){ st.quiz = !!on; st.part = null; if (!on && renderer) { targets(); needFit = true; } else if (renderer) buildPins(); },
+  quizShow(m){ st.mode = m; st.part = null; if (renderer) { targets(); needFit = true; } },
+  setPins(on){ st.labels = !!on; if (renderer) buildPins(); },
+  view(v){ if (!renderer) return; if (v === 'reset') return fit(); const t = controls.target.clone(), d = camera.position.distanceTo(t);
+    const dir = v === 'side' ? V(1, .08, .2) : v === 'top' ? V(0, 1, .08) : V(0, .08, 1); tweenTo(t, t.clone().addScaledVector(dir.normalize(), d), .8); },
+  zoom(f){ if (!renderer) return; const t = controls.target, p = camera.position; tweenTo(t.clone(), t.clone().add(p.clone().sub(t).multiplyScalar(f)), .35); }
+};
+(window.__r3q || []).forEach(([c, a]) => API[c](...a)); window.__r3q = [];
 </script>
 
 </body></html>
